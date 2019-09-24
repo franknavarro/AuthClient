@@ -33,7 +33,7 @@ class SignForm extends Component {
     const { handleSubmit } = this.props;
     return (
       <div className="ui middle aligned center aligned grid">
-        <div className="column">
+        <div className="column" style={{ maxWidth: '500px' }}>
           <form
             onSubmit={handleSubmit(this.onSubmit)}
             className="ui large form error"
