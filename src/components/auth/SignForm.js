@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { clearError } from '../../actions';
+
+import SignField from './SignField';
 
 class SignForm extends Component {
   onSubmit = formProps => {
@@ -30,28 +32,37 @@ class SignForm extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit)} className="ui form error">
-        <div className="field">
-          <label>Email</label>
-          <Field
-            name="email"
-            type="text"
-            component="input"
-            autoComplete="none"
-          />
+      <div className="ui middle aligned center aligned grid">
+        <div className="column">
+          <form
+            onSubmit={handleSubmit(this.onSubmit)}
+            className="ui large form error"
+          >
+            <div className="ui stacked segment">
+              <SignField
+                name="email"
+                type="text"
+                component="input"
+                autoComplete="none"
+                placeholder="Email address"
+                icon="user"
+              />
+              <SignField
+                name="password"
+                type="password"
+                component="input"
+                autoComplete="none"
+                placeholder="Password"
+                icon="lock"
+              />
+              <button className="ui fluid button primary">
+                {this.props.buttonName}
+              </button>
+            </div>
+            {this.renderErrorMessage()}
+          </form>
         </div>
-        <div className="field">
-          <label>Password</label>
-          <Field
-            name="password"
-            type="password"
-            component="input"
-            autoComplete="none"
-          />
-        </div>
-        {this.renderErrorMessage()}
-        <button className="ui button primary">{this.props.buttonName}</button>
-      </form>
+      </div>
     );
   }
 }
