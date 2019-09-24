@@ -45,7 +45,7 @@ class SignForm extends Component {
                 component="input"
                 autoComplete="none"
                 placeholder="Email address"
-                icon="user"
+                icon="envelope"
               />
               <SignField
                 name="password"
