@@ -5,7 +5,7 @@ import { signup } from '../../actions';
 import signForm from './signForm';
 import SignField from './SignField';
 
-const Signin = props => {
+const Signup = props => {
   return (
     <>
       <Field
@@ -34,4 +34,4 @@ const Signin = props => {
   );
 };
 
-export default signForm(Signin, { name: 'Sign Up', onSubmit: signup });
+export default signForm(Signup, { name: 'Sign Up', onSubmit: signup });
