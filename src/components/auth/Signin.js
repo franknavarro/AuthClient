@@ -1,13 +1,30 @@
 import React from 'react';
-import SignForm from './SignForm';
-import { connect } from 'react-redux';
+import { Field } from 'redux-form';
+
 import { signin } from '../../actions';
+import signForm from './signForm';
+import SignField from './SignField';
 
 const Signin = props => {
-  return <SignForm {...props} buttonName="Sign In" />;
+  return (
+    <>
+      <Field
+        name="email"
+        component={SignField}
+        autoComplete="off"
+        placeholder="Email address"
+        icon="envelope"
+      />
+      <Field
+        name="password"
+        type="password"
+        component={SignField}
+        autoComplete="off"
+        placeholder="Password"
+        icon="lock"
+      />
+    </>
+  );
 };
 
-export default connect(
-  null,
-  { onSubmit: signin },
-)(Signin);
+export default signForm(Signin, { name: 'Sign In', onSubmit: signin });
