@@ -51,7 +51,7 @@ class Header extends Component {
       <div className="ui secondary menu">
         <div className="ui container">
           <Link to="/" className={`item ${this.activePath('/')}`}>
-            Redux Auth
+            Home
           </Link>
           {this.renderLinks()}
           <div className="right menu">{this.renderLoginButtons()}</div>
