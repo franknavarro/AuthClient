@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm } from 'redux-form';
+import {
+  reduxForm,
+  getFormMeta,
+  getFormSyncErrors,
+  getFormSubmitErrors,
+} from 'redux-form';
 import { clearError } from '../../actions';
 
-export default (ChildComponent, { onSubmit, name }) => {
+export default (ChildComponent, { onSubmit, name, validate }) => {
   class ComposedComponent extends Component {
     onSubmit = formProps => {
-      this.props.onSubmit(formProps, () => {
+      return this.props.onSubmit(formProps, () => {
         this.props.history.push('/feature');
       });
     };
@@ -16,14 +21,50 @@ export default (ChildComponent, { onSubmit, name }) => {
       this.props.clearError();
     }
 
+    renderSubMessages(subMessages) {
+      return (
+        <ul className="list">
+          {subMessages.map((subMessage, index) => {
+            return <li key={index}>{subMessage}</li>;
+          })}
+        </ul>
+      );
+    }
+
     renderErrorMessage() {
-      if (this.props.errorMessage) {
+      const formErrors = {
+        ...this.props.formErrors,
+        ...this.props.submitErrors,
+      };
+      const errorEntries = Object.entries(formErrors);
+      const formMetas = this.props.formMetas;
+
+      const showErrors = [];
+      errorEntries.forEach(([fieldName, { message, subMessages }]) => {
+        const meta = formMetas[fieldName];
+        if (message && meta && meta.touched) {
+          showErrors.push({ message, fieldName, subMessages });
+        }
+      });
+
+      if (showErrors.length || this.props.error) {
         return (
           <div className="ui error message">
-            <p>{this.props.errorMessage}</p>
+            {this.props.error && <p>{this.props.error}</p>}
+            <ul className="list">
+              {showErrors.map(({ message, fieldName, subMessages }) => {
+                return (
+                  <li key={fieldName}>
+                    {message}
+                    {subMessages && this.renderSubMessages(subMessages)}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         );
       }
+
       return null;
     }
 
@@ -49,7 +90,12 @@ export default (ChildComponent, { onSubmit, name }) => {
   }
 
   const mapStateToProps = state => {
-    return { errorMessage: state.auth.errorMessage };
+    return {
+      errorMessage: state.auth.errorMessage,
+      formMetas: getFormMeta(name)(state),
+      formErrors: getFormSyncErrors(name)(state),
+      submitErrors: getFormSubmitErrors(name)(state),
+    };
   };
 
   return compose(
@@ -57,6 +103,6 @@ export default (ChildComponent, { onSubmit, name }) => {
       mapStateToProps,
       { onSubmit, clearError },
     ),
-    reduxForm({ form: name }),
+    reduxForm({ form: name, validate }),
   )(ComposedComponent);
 };

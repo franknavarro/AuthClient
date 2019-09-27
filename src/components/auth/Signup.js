@@ -4,6 +4,7 @@ import { Field } from 'redux-form';
 import { signup } from '../../actions';
 import signForm from './signForm';
 import SignField from './SignField';
+import { isEmpty, invalidEmail, invalidPassword } from '../../validation';
 
 const Signup = props => {
   return (
@@ -34,4 +35,26 @@ const Signup = props => {
   );
 };
 
-export default signForm(Signup, { name: 'Sign Up', onSubmit: signup });
+const validate = ({ name, email, password }) => {
+  const errors = {};
+  if (isEmpty(name)) {
+    errors.name = { message: 'Please enter your name' };
+  }
+  if (isEmpty(email)) {
+    errors.email = { message: 'Please enter your email' };
+  } else if (invalidEmail(email)) {
+    errors.email = { message: 'Please enter a valid email address' };
+  }
+  const notPassword = invalidPassword(password);
+  if (notPassword) {
+    errors.password = notPassword;
+  }
+
+  return errors;
+};
+
+export default signForm(Signup, {
+  name: 'Sign Up',
+  onSubmit: signup,
+  validate,
+});

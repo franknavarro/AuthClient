@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AUTH_USER, AUTH_ERROR } from './types';
+import { SubmissionError } from 'redux-form';
 
 export const signup = (formProps, callback) => async dispatch => {
   try {
@@ -12,7 +13,12 @@ export const signup = (formProps, callback) => async dispatch => {
     localStorage.setItem('token', response.data.token);
     callback();
   } catch (e) {
-    dispatch({ type: AUTH_ERROR, payload: 'Email is already in use' });
+    return Promise.reject(
+      new SubmissionError({
+        email: { message: 'Email is already in use' },
+      }),
+    );
+    // dispatch({ type: AUTH_ERROR, payload: 'Email is already in use' });
   }
 };
 
@@ -37,6 +43,11 @@ export const signin = (formProps, callback) => async dispatch => {
     callback();
   } catch (e) {
     dispatch({ type: AUTH_ERROR, payload: 'Incorrect username or password' });
+    return Promise.reject(
+      new SubmissionError({
+        _error: 'Incorrect username or password',
+      }),
+    );
   }
 };
 
